@@ -1,0 +1,39 @@
+# deploy.yml
+name: CI/CD Pipeline for Quasar
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install and Build
+        run: |
+          npm install
+          npx quasar build
+
+      - name: Copy index.html to 404.html
+        if: github.ref == 'refs/heads/master'
+        run: cp dist/spa/index.html dist/spa/404.html
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/master'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
