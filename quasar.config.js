@@ -36,7 +36,7 @@ export default defineConfig((ctx) => {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-file#build
     build: {
-      publicPath: 'https://github.com/Mailnwza007/6512345678-john-doe.git/',
+      publicPath: './',
       vueRouterMode: 'hash', // available values: 'hash', 'history'
 
       // webpackTranspile: false,
